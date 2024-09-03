@@ -1,0 +1,28 @@
+.about {
+  padding-top: 30vh;
+}
+
+.logos {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.about h2 {
+  margin-top: 20px;
+}
+
+img {
+  max-width: 300px;
+  max-height: 300px;
+  filter: drop-shadow(0px 0 8px white)
+          drop-shadow(0px 0 8px white)
+}
+
+.firebase-logo {
+  max-height: 200px;
+}
+
+h2 {
+  color: snow;
+}

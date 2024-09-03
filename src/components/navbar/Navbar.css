@@ -1,0 +1,45 @@
+.navbar {
+  min-height: 100px;
+  position: fixed;
+  width: 100%;
+  z-index: 100;
+  background-color: #1596ff; /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+
+
+.navbar ul {
+  width: 80%;
+  position: relative;
+  left: 4%;
+  text-align: left;
+}
+
+.navbar li {
+  display: inline-block;
+  text-align: center;
+  padding: 10px 30px; 
+  font-size: 1.7rem;
+  font-weight: bolder;
+  letter-spacing: 2px;
+}
+
+.Link {
+  text-decoration: none;
+  color: snow;
+}
+
+.Link:hover {
+  color: rgb(193, 243, 250);
+}
+
+
+
+.user-info {
+  width: 20%;
+  display: flex;
+  flex-direction: column;
+}

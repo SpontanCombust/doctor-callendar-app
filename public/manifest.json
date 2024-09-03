@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Callendar App",
+  "name": "App for managing doctor appointments using a callendar",
   "icons": [
     {
       "src": "favicon.ico",
