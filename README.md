@@ -27,13 +27,15 @@ It correctly bundles React in production mode and optimizes the build for the be
 
 <!-- 
 ## TODO
-- [ ] logowanie się
-- [ ] wylogowywanie się
+- [x] logowanie się
+- [x] wylogowywanie się
 - [ ] widok na głównej o niezalogowaniu
 - [ ] formatka wizyty
 - [ ] dodawanie nowych wizyt
 - [ ] edytowanie wizyt
 - [ ] usuwanie wizyt
 - [x] strona "o nas"
+- [ ] zmienić favicon
+- [ ] dopicować widoki
 - [ ] opublikowanie na github pages 
 -->

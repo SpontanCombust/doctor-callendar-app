@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
 
@@ -15,10 +15,11 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 
-export function useFirestore() {
-  return getFirestore(app);
+export const db = getFirestore(app);
+
+// if we're testing the app locally, use the firebase testing suite
+if (window.location.hostname === 'localhost') {
+  connectFirestoreEmulator(db, '127.0.0.1', 8080);
 }
 
-
-const auth = getAuth(app);
-auth.currentUser?.uid
+export const auth = getAuth(app);

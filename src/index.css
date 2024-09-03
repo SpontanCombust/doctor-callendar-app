@@ -25,3 +25,22 @@ code {
   position: relative;
   top: 100px;
 }
+
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border: solid white 1px;
+  border-radius: 10px;
+  background-color: snow;
+}
+
+.button:hover {
+  cursor: pointer;
+  filter: brightness(95%)
+}
+
+.button > img {
+  margin-right: 10px;
+}
