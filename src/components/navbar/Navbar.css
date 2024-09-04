@@ -3,9 +3,7 @@
   position: fixed;
   width: 100%;
   z-index: 100;
-  background-color: #1596ff; /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-  display: flex;
-  flex-direction: row;
+  background-color: var(--primary-color); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   align-items: center;
 }
 
@@ -13,9 +11,8 @@
 
 .navbar ul {
   width: 80%;
-  position: relative;
-  left: 4%;
   text-align: left;
+  padding-left: 4%;
 }
 
 .navbar li {
@@ -29,22 +26,29 @@
 
 .Link {
   text-decoration: none;
-  color: snow;
+  color: var(--secondary-color);
 }
 
 .Link:hover {
-  color: rgb(193, 243, 250);
+  filter: brightness(95%);
 }
 
 
 
 .user-info {
   width: 20%;
-  display: flex;
-  flex-direction: column;
+  text-align: right;
+  justify-content: right;
+  padding-right: 4%;
 }
 
 .user-info .login {
   text-decoration: underline;
   cursor: pointer;
+}
+
+.user-info .profile-icon {
+  margin: 0 10px;
+  font-size: 3rem;
+  color: var(--secondary-color);
 }

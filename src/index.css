@@ -5,6 +5,38 @@
   border: 0;  
 }
 
+/* Utility classes */
+
+.flexv {
+  display: flex;
+  flex-direction: column;
+}
+
+.flexh {
+  display: flex;
+  flex-direction: row;
+}
+
+.center {
+  justify-content: center;
+  align-items: center;
+}
+
+
+@property --primary-color {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #1596ff;
+}
+
+@property --secondary-color {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: snow;
+}
+
+
+/* Main declarations */
 
 body {
   margin: 0;
@@ -21,6 +53,7 @@ code {
     monospace;
 }
 
+
 .content {
   position: relative;
   top: 100px;
@@ -31,9 +64,10 @@ code {
   align-items: center;
   justify-content: center;
   padding: 8px 16px;
-  border: solid white 1px;
+  border: solid var(--primary-color) 1px;
   border-radius: 10px;
-  background-color: snow;
+  border-width: 2px;
+  background-color: var(--secondary-color);
 }
 
 .button:hover {

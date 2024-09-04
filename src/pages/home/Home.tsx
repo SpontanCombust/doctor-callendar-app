@@ -1,5 +1,5 @@
 import { AppointmentModel, ViewState } from '@devexpress/dx-react-scheduler';
-import { Appointments, DayView, MonthView, Scheduler, Toolbar, ViewSwitcher, WeekView } from '@devexpress/dx-react-scheduler-material-ui'
+import { Appointments, AppointmentTooltip, DateNavigator, DayView, MonthView, Scheduler, Toolbar, ViewSwitcher, WeekView } from '@devexpress/dx-react-scheduler-material-ui'
 
 import { Navbar } from '../../components/navbar/Navbar';
 import { Paper } from '@mui/material';
@@ -35,7 +35,7 @@ export function Home() {
             locale={["pl-PL", "en-US"]}
           >
             <ViewState
-              currentDate={currentDate}
+              defaultCurrentDate={currentDate}
             />
             
             <DayView
@@ -51,19 +51,36 @@ export function Home() {
             <Toolbar />
             {/* //FIXME missing localization in the switcher */}
             <ViewSwitcher />
+            <DateNavigator/>
             
             <Appointments/>
+            <AppointmentTooltip
+              showOpenButton
+              showDeleteButton
+              showCloseButton
+            />
           </Scheduler>
         </Paper>
         :
-        <div id='schedule-not-signedin'>
+        <div className='flexv center'>
           <h3>Zaloguj się, by przejść do widoku kalendarza</h3>
           <div className='button' onClick={logIn}>
-            <img src={googleIcon} width="20px"/>
+            <img src={googleIcon} alt='Google' width="20px"/>
             <span>Zaloguj się przez Google</span>
           </div>
         </div>
       }
     </div>
   </>);
+}
+
+
+enum SchedulerViewState {
+  Day,
+  Week,
+  Month
+}
+
+async function fetchAppointments(currentDate: Date, viewState: SchedulerViewState) {
+  //TODO
 }

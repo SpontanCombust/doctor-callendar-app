@@ -2,12 +2,6 @@
   padding-top: 30vh;
 }
 
-.logos {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-}
-
 .about h2 {
   margin-top: 20px;
 }
@@ -24,5 +18,5 @@ img {
 }
 
 h2 {
-  color: snow;
+  color: var(--secondary-color);
 }

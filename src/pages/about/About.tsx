@@ -9,7 +9,7 @@ export function About() {
   return (<>
     <Navbar/>
     <div className="about">
-      <div className="logos">
+      <div className="flexh center">
         <img src={reactLogo} alt="React" className="react-logo"/>
         <img src={firebaseLogo} alt="Firebase" className="firebase-logo"/>
       </div>
