@@ -1,13 +1,33 @@
+import { useCallback } from 'react';
 import * as dx from '@devexpress/dx-react-scheduler';
 import * as dxmui from '@devexpress/dx-react-scheduler-material-ui'
+import * as mui from '@mui/material'
+import * as fb from 'firebase/firestore';
+import * as ico from '@mui/icons-material';
+
+import { DoctorAppointment } from '../../model/DoctorAppointment';
 
 import "./DoctorScheduler.css"
 
 
 const currentDate = '2018-11-01';
-const schedulerData: dx.AppointmentModel[] = [
-  { startDate: '2018-11-01T09:45', endDate: '2018-11-01T11:00', title: 'Meeting' },
-  { startDate: '2018-11-01T12:00', endDate: '2018-11-01T13:30', title: 'Go to a gym' },
+const schedulerData: DoctorAppointmentProxy[] = [
+  { 
+    userId: '00000000-0000-0000-0000-000000000000',
+    startDate: new Date('2018-11-01T09:45'), 
+    endDate: new Date('2018-11-01T11:00'), 
+    patientName: 'John',
+    patientSurname: 'Doe',
+    title: 'Sore throat',
+  },
+  { 
+    userId: '00000000-0000-0000-0000-000000000001',
+    startDate: new Date('2018-11-01T12:00'), 
+    endDate: new Date('2018-11-01T13:30'), 
+    patientName: 'Marry',
+    patientSurname: 'Ann',
+    title: 'Muscle pain',
+  },
 ];
 
 
@@ -17,7 +37,7 @@ export function DoctorScheduler({
   return (
     <dxmui.Scheduler 
       data={schedulerData}
-      locale={["pl-PL", "en-US"]}
+      locale="pl"
     >
       <dx.ViewState
         defaultCurrentDate={currentDate}
@@ -38,24 +58,183 @@ export function DoctorScheduler({
       <dxmui.ViewSwitcher />
       <dxmui.DateNavigator/>
       
-      <dxmui.Appointments/>
+      <dxmui.Appointments
+        appointmentContentComponent={AppointmentContentComponent}
+      />
       <dxmui.AppointmentTooltip
         showOpenButton
         showDeleteButton
         showCloseButton
+
+        contentComponent={AppointmentTooltipContent}
+      />
+      <dxmui.AppointmentForm
+        basicLayoutComponent={AppointmentFormBasicLayout}
       />
     </dxmui.Scheduler>   
   )
 }
 
 
+// A local appointment model that we use to convert between the data in database and data expected in the scheduler
+// Due to how the Meterial components work, its required fields **have to** be compliant with the dx.AppointmentModel interface to make use of built in functions
+interface DoctorAppointmentProxy {
+  startDate: Date,
+  endDate: Date,
+  title: string,
+  
+  // additional data
+  userId: string,
+  patientName: string,
+  patientSurname: string,
+  description?: string
+}
 
-// function FormLayout(props: AppointmentForm.BasicLayoutProps) {
-//   return <AppointmentForm.BasicLayout {...props} locale={"pl"}>
-//     <AppointmentForm.Label text='LAbel1' type='titleLabel'/>
-//     <AppointmentForm.TextEditor text = 'Editor1' value="Editor1" placeholder='' onValueChange={() => {}} type='ordinaryTextEditor' readOnly={false}/>
-//   </AppointmentForm.BasicLayout>
-// }
+function appointmentProxyToModel(proxy: DoctorAppointmentProxy): DoctorAppointment {
+  return {
+    userId: proxy.userId,
+    startDate: fb.Timestamp.fromDate(proxy.startDate),
+    endDate: fb.Timestamp.fromDate(proxy.endDate),
+    purpose: proxy.title,
+    patientName: proxy.patientName,
+    patientSurname: proxy.patientSurname,
+    description: proxy.description
+  }
+}
+
+function appointmentModelToProxy(model: DoctorAppointment): DoctorAppointmentProxy {
+  return {
+    userId: model.userId,
+    startDate: new Date(model.startDate.toMillis()),
+    endDate: new Date(model.endDate.toMillis()),
+    title: model.purpose,
+    patientName: model.patientName,
+    patientSurname: model.patientSurname,
+    description: model.description
+  }
+}
+
+
+
+function AppointmentContentComponent(props: dxmui.Appointments.AppointmentContentProps) {
+  const data = props.data as DoctorAppointmentProxy;
+  return (
+  <div className='flexv align-center'>
+    <p className='fg-secondary'>{data.patientName} {data.patientSurname}</p>
+    <p className='fg-secondary'>{data.title}</p>
+    <div className='flexh fg-secondary'>
+      {props.formatDate(data.startDate, { hour: 'numeric', minute: 'numeric' })}
+      -
+      {data.endDate ? props.formatDate(data.endDate, { hour: 'numeric', minute: 'numeric' }) : ''}
+    </div>
+  </div>
+  )
+}
+
+
+function AppointmentTooltipContent(props: dxmui.AppointmentTooltip.ContentProps) {
+  const data = props.appointmentData as DoctorAppointmentProxy;
+  return (
+    <dxmui.AppointmentTooltip.Content {...props}>
+      <mui.Grid container alignItems="center">
+      <mui.Grid item xs={2} className='text-center'>
+        <ico.Person/>
+      </mui.Grid>
+      <mui.Grid item xs={10}>
+        <span>{data.patientName} {data.patientSurname}</span>
+      </mui.Grid>
+    </mui.Grid>
+      
+    </dxmui.AppointmentTooltip.Content>
+  )
+}
+
+
+function AppointmentFormBasicLayout(props: dxmui.AppointmentForm.BasicLayoutProps) {
+  const data = props.appointmentData as DoctorAppointmentProxy;
+
+  const onNameChange = useCallback((patientName) => props.onFieldChange({patientName} as Partial<DoctorAppointmentProxy>), [props]);
+  const onSurnameChange = useCallback((patientSurname) => props.onFieldChange({patientSurname} as Partial<DoctorAppointmentProxy>), [props]);
+  const onTitleChange = useCallback((title) => props.onFieldChange({title} as Partial<DoctorAppointmentProxy>), [props]);
+  const onStartDateChange = useCallback((startDate) => props.onFieldChange({startDate} as Partial<DoctorAppointmentProxy>), [props]);
+  const onEndDateChange = useCallback((endDate) => props.onFieldChange({endDate} as Partial<DoctorAppointmentProxy>), [props]);
+  const onDescriptionChange = useCallback((description) => props.onFieldChange({description} as Partial<DoctorAppointmentProxy>), [props]);
+
+  return (
+    <div className='center appointment-form'>
+      <dxmui.AppointmentForm.Label
+        text="Dane pacjenta"
+        type='titleLabel'
+        style={{fontWeight: 'bolder', marginTop: '15px', marginBottom: '5px'}}
+      />
+      <div className='flexh justify-center'>
+        <dxmui.AppointmentForm.TextEditor
+          type='ordinaryTextEditor'
+          placeholder='Imię'
+          value={data.patientName}
+          onValueChange={onNameChange}
+          readOnly={props.readOnly ?? false}
+          style={{margin: '0 5px'}}
+        />
+        <dxmui.AppointmentForm.TextEditor
+          type='ordinaryTextEditor'
+          placeholder='Nazwisko'
+          value={data.patientSurname}
+          onValueChange={onSurnameChange}
+          readOnly={props.readOnly ?? false}
+          style={{margin: '0 5px'}}
+        />
+      </div>
+
+      <dxmui.AppointmentForm.Label
+        text="Dane wizyty"
+        type='titleLabel'
+        style={{fontWeight: 'bolder', marginTop: '15px', marginBottom: '5px'}}
+      />
+      <dxmui.AppointmentForm.TextEditor
+        type='ordinaryTextEditor'
+        placeholder='Powód wizyty'
+        value={data.title}
+        onValueChange={onTitleChange}
+        readOnly={props.readOnly ?? false}
+      />
+      <div className='flexh center'>
+        <dxmui.AppointmentForm.DateEditor
+          value={data.startDate.toUTCString()}
+          onValueChange={onStartDateChange}
+          locale='pl'
+          readOnly={props.readOnly ?? false}
+          style={{width: '45%'}}
+        />
+        <dxmui.AppointmentForm.Label
+          text="-"
+          type='ordinaryLabel'
+          style={{width: '10%'}}
+        />
+        <dxmui.AppointmentForm.DateEditor
+          value={data.endDate.toUTCString()}
+          onValueChange={onEndDateChange}
+          locale='pl'
+          readOnly={props.readOnly ?? false}
+          style={{width: '45%'}}
+        />
+      </div>
+
+      <dxmui.AppointmentForm.Label
+        text="Szczegóły"
+        type='titleLabel'
+        style={{fontWeight: 'bolder', marginTop: '15px', marginBottom: '5px'}}
+      />
+      <dxmui.AppointmentForm.TextEditor
+          type='multilineTextEditor'
+          placeholder=''
+          value={data.description ?? ''}
+          onValueChange={onDescriptionChange}
+          readOnly={props.readOnly ?? false}
+        />
+    </div>
+  )
+}
 
 
 enum SchedulerViewState {
@@ -64,6 +243,6 @@ enum SchedulerViewState {
   Month
 }
 
-async function fetchAppointments(currentDate: Date, viewState: SchedulerViewState) {
+async function fetchAppointments(currentDate: Date) {
   //TODO
 }

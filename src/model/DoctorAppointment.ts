@@ -1,12 +1,12 @@
-import { Timestamp } from "firebase/firestore";
+import * as fb from "firebase/firestore";
 
 
 export interface DoctorAppointment {
     userId: string,
-    startDate: Timestamp,
-    endDate?: Timestamp,
+    startDate: fb.Timestamp,
+    endDate: fb.Timestamp,
     patientName: string,
     patientSurname: string,
-    synopsis: string,
+    purpose: string,
     description?: string
 }

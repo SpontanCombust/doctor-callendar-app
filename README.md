@@ -1,6 +1,6 @@
 # Callendar App
 
-A small React app for doctors to manage patient appointments.
+A small React app for doctors to manage patient appointments. Currently only supports Polish language.
 This project has been created as a test assignment.
 
 
@@ -29,8 +29,8 @@ It correctly bundles React in production mode and optimizes the build for the be
 ## TODO
 - [x] logowanie się
 - [x] wylogowywanie się
-- [ ] widok na głównej o niezalogowaniu
-- [ ] formatka wizyty
+- [x] widok na głównej o niezalogowaniu
+- [x] formatka wizyty
 - [ ] dodawanie nowych wizyt
 - [ ] edytowanie wizyt
 - [ ] usuwanie wizyt
