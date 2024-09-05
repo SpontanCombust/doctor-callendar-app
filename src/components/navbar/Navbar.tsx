@@ -18,7 +18,7 @@ export function Navbar() {
   return (
     <nav className="navbar flexh">
       <ul>
-        <li><Link to="/" className="Link">Kalendarz</Link></li>
+        <li><Link to="/" className="Link">Harmonogram</Link></li>
         <li><Link to="/about" className="Link">O nas</Link></li>
       </ul>
       <div className="user-info flexh">
