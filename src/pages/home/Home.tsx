@@ -22,7 +22,7 @@ export function Home() {
     <div className='content'>
       {userId !== undefined ?
         <Paper>
-          <DoctorScheduler/>
+          <DoctorScheduler userId={userId}/>
         </Paper>
         :
         <div className='flexv center'>
