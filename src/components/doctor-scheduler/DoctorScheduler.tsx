@@ -1,78 +1,111 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import * as dx from '@devexpress/dx-react-scheduler';
 import * as dxmui from '@devexpress/dx-react-scheduler-material-ui'
 import * as mui from '@mui/material'
 import * as fb from 'firebase/firestore';
 import * as ico from '@mui/icons-material';
-import { v4 as uuidv4 } from 'uuid'
+import { NIL } from 'uuid';
 
 import { DoctorAppointment } from '../../model/DoctorAppointment';
+import { AppointmentsService } from '../../services/AppointmentsService';
+import { usePrevious } from '../../utils';
 
 import "./DoctorScheduler.css"
-
-
-
-const currentDate = '2018-11-01';
 
 
 export function DoctorScheduler(props: {
   userId: string
 }) {
-  // TODO: replace with firestore connection later
-  const [schedulerData, setSchedulerData] = useState<DoctorAppointmentProxy[]>([
-    { 
-      id: uuidv4(),
-      userId: props.userId,
-      startDate: new Date('2018-11-01T09:45'), 
-      endDate: new Date('2018-11-01T11:00'), 
-      patientName: 'John',
-      patientSurname: 'Doe',
-      title: 'Sore throat',
-    },
-    { 
-      id: uuidv4(),
-      userId: props.userId,
-      startDate: new Date('2018-11-01T12:00'), 
-      endDate: new Date('2018-11-01T13:30'), 
-      patientName: 'Marry',
-      patientSurname: 'Ann',
-      title: 'Muscle pain',
-    },
-  ]);
+  const [currentDate, setCurrentDate] = useState<Date>(new Date());
+  const previousDate = usePrevious(currentDate);
+  const [schedulerData, setSchedulerData] = useState<DoctorAppointmentProxy[]>([]);
 
-  function commitAppointmentChanges({added, changed, deleted}: dx.ChangeSet) {
+  /* Disabling this rule, because we're making use of `previousDate` here and adding it as dependency would mean an infinite loop */
+  /* eslint-disable react-hooks/exhaustive-deps */
+
+  // initial data update
+  useEffect(() => {
+    fetchAppointments(props.userId, currentDate, setSchedulerData)
+        .catch(console.error);
+  }, []);
+
+  // data update on date change 
+  useEffect(() => {
+    if (previousDate && shouldFetchAppointments(previousDate, currentDate)) {
+      fetchAppointments(props.userId, currentDate, setSchedulerData)
+        .catch(console.error);
+    }
+  }, [currentDate]);
+  
+  /* eslint-enable react-hooks/exhaustive-deps */
+
+
+
+  async function commitAppointmentChanges({added, changed, deleted}: dx.ChangeSet) {
     let newData = [...schedulerData];
     
     if (added) {
-      const newId = uuidv4();
-      const data = added as DoctorAppointmentProxy;
-      newData = [...newData, {...data, id: newId}];
+      try {
+        const proxyData = added as DoctorAppointmentProxy;
+        proxyData.userId = props.userId;
+        const modelData = appointmentProxyToModel(proxyData);
+
+        const newId = await AppointmentsService.addAppointment(modelData);
+
+        proxyData.id = newId;
+        newData = [...newData, proxyData];
+      } catch(err) {
+        console.error('Failed to add new appointments: ' + err);
+      }
     }
+
     if (changed) {
-      newData = newData.map(appointment => {
-        if (changed[appointment.id]) {
-          const data = changed[appointment.id] as Partial<DoctorAppointmentProxy>;
-          return {...appointment, ...data};
-        } else {
-          return appointment;
+      for(let i = 0; i < newData.length; i += 1) {
+        const proxyData = newData[i];
+        if (proxyData.id !== undefined && changed[proxyData.id]) {
+          try {
+            const updatedProxyData: DoctorAppointmentProxy = {...proxyData, ...changed[proxyData.id]};
+            const modelData = appointmentProxyToModel(updatedProxyData);
+
+            await AppointmentsService.updateAppointment(modelData.appointmentId, modelData);
+
+            newData[i] = updatedProxyData;
+          } catch(err) {
+            console.error('Failed to update appointments: ' + err);
+          }
         }
-      });
+      }
     }
+
     if (deleted) {
-      newData = newData.filter(appointment => {
-        return appointment.id !== deleted;
-      });
+      let i = 0;
+      // we need a while loop, so that the incrementation can be conditional
+      // it needs to be conditional, because we're removing elements along the way
+      while (i < newData.length) {
+        const proxyData = newData[i];
+        if (proxyData.id === deleted) {
+          try {
+            await AppointmentsService.deleteAppointment(proxyData.id);
+            newData.splice(i, 1);
+          } catch(err) {
+            console.error('Failed to delete an appointment: ' + err);
+            i += 1;
+          }
+        } else {
+          i += 1;
+        }
+      }
     }
 
     setSchedulerData(newData);
-  } 
+  }
 
   return (
     <dxmui.Scheduler 
       data={schedulerData}
       locale="pl"
     >
-      <dx.ViewState defaultCurrentDate={currentDate}/>
+      <dx.ViewState defaultCurrentDate={currentDate} onCurrentDateChange={setCurrentDate}/>
       <dx.EditingState onCommitChanges={commitAppointmentChanges}/>
       <dx.IntegratedEditing/>
       
@@ -115,33 +148,34 @@ export function DoctorScheduler(props: {
 // Due to how the Meterial components work, its required fields **have to** be compliant with the dx.AppointmentModel interface to make use of built in functions
 interface DoctorAppointmentProxy {
   // required fields
-  id: string,
+  id?: string,
   startDate: Date,
-  endDate: Date,
-  title: string,
+  endDate?: Date,
+  title?: string,
   
   // additional data
-  userId: string,
-  patientName: string,
-  patientSurname: string,
+  userId?: string,
+  patientName?: string,
+  patientSurname?: string,
   description?: string
 }
 
-function appointmentProxyToModel(proxy: DoctorAppointmentProxy): [string, DoctorAppointment] {
-  return [proxy.id, {
-    userId: proxy.userId,
+function appointmentProxyToModel(proxy: DoctorAppointmentProxy): DoctorAppointment {
+  return {
+    appointmentId: proxy.id ?? NIL,
+    userId: proxy.userId ?? NIL,
     startDate: fb.Timestamp.fromDate(proxy.startDate),
-    endDate: fb.Timestamp.fromDate(proxy.endDate),
-    purpose: proxy.title,
-    patientName: proxy.patientName,
-    patientSurname: proxy.patientSurname,
-    description: proxy.description
-  }]
+    endDate: fb.Timestamp.fromDate(proxy.endDate ?? proxy.startDate),
+    purpose: proxy.title ?? '',
+    patientName: proxy.patientName ?? '',
+    patientSurname: proxy.patientSurname ?? '',
+    description: proxy.description ?? ''
+  }
 }
 
-function appointmentModelToProxy(id: string, model: DoctorAppointment): DoctorAppointmentProxy {
+function appointmentModelToProxy(model: DoctorAppointment): DoctorAppointmentProxy {
   return {
-    id,
+    id: model.appointmentId,
     userId: model.userId,
     startDate: new Date(model.startDate.toMillis()),
     endDate: new Date(model.endDate.toMillis()),
@@ -153,7 +187,7 @@ function appointmentModelToProxy(id: string, model: DoctorAppointment): DoctorAp
 }
 
 
-
+// FIXME time not visible
 function AppointmentContentComponent(props: dxmui.Appointments.AppointmentContentProps) {
   const data = props.data as DoctorAppointmentProxy;
   return (
@@ -209,7 +243,7 @@ function AppointmentFormBasicLayout(props: dxmui.AppointmentForm.BasicLayoutProp
         <dxmui.AppointmentForm.TextEditor
           type='ordinaryTextEditor'
           placeholder='Imię'
-          value={data.patientName}
+          value={data.patientName ?? ''}
           onValueChange={onNameChange}
           readOnly={props.readOnly ?? false}
           style={{margin: '0 5px'}}
@@ -217,7 +251,7 @@ function AppointmentFormBasicLayout(props: dxmui.AppointmentForm.BasicLayoutProp
         <dxmui.AppointmentForm.TextEditor
           type='ordinaryTextEditor'
           placeholder='Nazwisko'
-          value={data.patientSurname}
+          value={data.patientSurname ?? ''}
           onValueChange={onSurnameChange}
           readOnly={props.readOnly ?? false}
           style={{margin: '0 5px'}}
@@ -232,7 +266,7 @@ function AppointmentFormBasicLayout(props: dxmui.AppointmentForm.BasicLayoutProp
       <dxmui.AppointmentForm.TextEditor
         type='ordinaryTextEditor'
         placeholder='Powód wizyty'
-        value={data.title}
+        value={data.title ?? ''}
         onValueChange={onTitleChange}
         readOnly={props.readOnly ?? false}
       />
@@ -250,7 +284,7 @@ function AppointmentFormBasicLayout(props: dxmui.AppointmentForm.BasicLayoutProp
           style={{width: '10%'}}
         />
         <dxmui.AppointmentForm.DateEditor
-          value={data.endDate.toUTCString()}
+          value={data.endDate?.toUTCString()}
           onValueChange={onEndDateChange}
           locale='pl'
           readOnly={props.readOnly ?? false}
@@ -275,12 +309,25 @@ function AppointmentFormBasicLayout(props: dxmui.AppointmentForm.BasicLayoutProp
 }
 
 
-enum SchedulerViewState {
-  Day,
-  Week,
-  Month
+// A relaxed rule for reloading the data
+// Since we use at best the month view we can focus on a one month period of cheking and loading the data
+function shouldFetchAppointments(previousDate: Date, currentDate: Date) : boolean {
+  return previousDate.getFullYear() !== currentDate.getFullYear()  
+        || previousDate.getMonth() !== currentDate.getMonth()
 }
 
-async function fetchAppointments(currentDate: Date) {
-  //TODO
+async function fetchAppointments(userId: string, currentDate: Date, dispatcher: (proxies: DoctorAppointmentProxy[]) => void) {
+  const firstDayOfThisMonth = new Date(currentDate);
+  firstDayOfThisMonth.setDate(1);
+  firstDayOfThisMonth.setHours(0, 0, 0);
+
+  const lastDayOfThisMonth = new Date(firstDayOfThisMonth);
+  lastDayOfThisMonth.setMonth(firstDayOfThisMonth.getMonth() + 1);
+  lastDayOfThisMonth.setDate(0); // sets the date to the last day of the previous month
+  lastDayOfThisMonth.setHours(23, 59, 59);
+
+  const models = await AppointmentsService.getAppointmentsForUser(userId, firstDayOfThisMonth, lastDayOfThisMonth);
+  const proxies = models.map(m => appointmentModelToProxy(m));
+
+  dispatcher(proxies);
 }
