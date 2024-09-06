@@ -275,6 +275,7 @@ function AppointmentFormBasicLayout(props: dxmui.AppointmentForm.BasicLayoutProp
           value={data.startDate.toUTCString()}
           onValueChange={onStartDateChange}
           locale='pl'
+          inputFormat={'MM/DD/YYYY HH:mm'}
           readOnly={props.readOnly ?? false}
           style={{width: '45%'}}
         />
@@ -287,6 +288,7 @@ function AppointmentFormBasicLayout(props: dxmui.AppointmentForm.BasicLayoutProp
           value={data.endDate?.toUTCString()}
           onValueChange={onEndDateChange}
           locale='pl'
+          inputFormat={'MM/DD/YYYY HH:mm'}
           readOnly={props.readOnly ?? false}
           style={{width: '45%'}}
         />
