@@ -1,5 +1,6 @@
 {
   "name": "doctor-callendar-app",
+  "homepage": "https://spontancombust.github.io/doctor-callendar-app/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
