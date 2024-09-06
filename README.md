@@ -7,12 +7,19 @@ This project has been created as a test assignment.
 
 ## How to run
 
+Open two terminal windows and run the following:
+
+```sh
+npm run emulators
+```
+
+Starts up Firebase emulators. You can access the UI on [http://localhost:4000](http://localhost:4000). 
+
 ```sh
 npm run start
 ```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Runs the app in the development mode. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.  
 
 
 ## Deployment
@@ -21,8 +28,9 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 npm run build
 ```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Builds the app for production to the `build` folder.
+
+Content of the `master` branch in the GitHub repository is automatically deployed to GitHub Pages.
 
 
 
@@ -36,7 +44,7 @@ It correctly bundles React in production mode and optimizes the build for the be
 - [x] edytowanie wizyt
 - [x] usuwanie wizyt
 - [x] strona "o nas"
-- [ ] podłączenie z db
+- [x] podłączenie z db
 - [ ] zmienić favicon
 - [ ] dopicować widoki
 - [ ] opublikowanie na github pages 

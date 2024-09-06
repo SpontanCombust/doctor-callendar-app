@@ -1,3 +1,7 @@
 .appointment-form {
   padding: 5% 10%;
 }
+
+.appointment-form-dates {
+  margin-top: 5px;
+}

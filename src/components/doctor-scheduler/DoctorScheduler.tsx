@@ -2,9 +2,13 @@ import { useCallback, useEffect, useState } from 'react';
 import * as dx from '@devexpress/dx-react-scheduler';
 import * as dxmui from '@devexpress/dx-react-scheduler-material-ui'
 import * as mui from '@mui/material'
+import * as muidp from '@mui/x-date-pickers'
 import * as fb from 'firebase/firestore';
 import * as ico from '@mui/icons-material';
 import { NIL } from 'uuid';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import pl from 'date-fns/locale/pl';
 
 import { DoctorAppointment } from '../../model/DoctorAppointment';
 import { AppointmentsService } from '../../services/AppointmentsService';
@@ -225,12 +229,12 @@ function AppointmentTooltipContent(props: dxmui.AppointmentTooltip.ContentProps)
 function AppointmentFormBasicLayout(props: dxmui.AppointmentForm.BasicLayoutProps) {
   const data = props.appointmentData as DoctorAppointmentProxy;
 
-  const onNameChange = useCallback((patientName) => props.onFieldChange({patientName} as Partial<DoctorAppointmentProxy>), [props]);
-  const onSurnameChange = useCallback((patientSurname) => props.onFieldChange({patientSurname} as Partial<DoctorAppointmentProxy>), [props]);
-  const onTitleChange = useCallback((title) => props.onFieldChange({title} as Partial<DoctorAppointmentProxy>), [props]);
-  const onStartDateChange = useCallback((startDate) => props.onFieldChange({startDate} as Partial<DoctorAppointmentProxy>), [props]);
-  const onEndDateChange = useCallback((endDate) => props.onFieldChange({endDate} as Partial<DoctorAppointmentProxy>), [props]);
-  const onDescriptionChange = useCallback((description) => props.onFieldChange({description} as Partial<DoctorAppointmentProxy>), [props]);
+  const onNameChange = useCallback((patientName?: string) => props.onFieldChange({patientName} as Partial<DoctorAppointmentProxy>), [props]);
+  const onSurnameChange = useCallback((patientSurname?: string) => props.onFieldChange({patientSurname} as Partial<DoctorAppointmentProxy>), [props]);
+  const onTitleChange = useCallback((title?: string) => props.onFieldChange({title} as Partial<DoctorAppointmentProxy>), [props]);
+  const onStartDateChange = useCallback((startDate: Date | null | undefined) => props.onFieldChange({startDate} as Partial<DoctorAppointmentProxy>), [props]);
+  const onEndDateChange = useCallback((endDate: Date | null | undefined) => props.onFieldChange({endDate} as Partial<DoctorAppointmentProxy>), [props]);
+  const onDescriptionChange = useCallback((description?: string) => props.onFieldChange({description} as Partial<DoctorAppointmentProxy>), [props]);
 
   return (
     <div className='center appointment-form'>
@@ -270,28 +274,28 @@ function AppointmentFormBasicLayout(props: dxmui.AppointmentForm.BasicLayoutProp
         onValueChange={onTitleChange}
         readOnly={props.readOnly ?? false}
       />
-      <div className='flexh center'>
-        <dxmui.AppointmentForm.DateEditor
-          value={data.startDate.toUTCString()}
-          onValueChange={onStartDateChange}
-          locale='pl'
-          inputFormat={'MM/DD/YYYY HH:mm'}
-          readOnly={props.readOnly ?? false}
-          style={{width: '45%'}}
-        />
-        <dxmui.AppointmentForm.Label
-          text="-"
-          type='ordinaryLabel'
-          style={{width: '10%'}}
-        />
-        <dxmui.AppointmentForm.DateEditor
-          value={data.endDate?.toUTCString()}
-          onValueChange={onEndDateChange}
-          locale='pl'
-          inputFormat={'MM/DD/YYYY HH:mm'}
-          readOnly={props.readOnly ?? false}
-          style={{width: '45%'}}
-        />
+      <div className='flexh center appointment-form-dates'>
+        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={pl}>
+          <muidp.DatePicker
+            renderInput={props => <mui.TextField {...props}/>}
+            value={data.startDate.toUTCString()}
+            onChange={onStartDateChange}
+            inputFormat={'MM/dd/yyyy HH:mm'}
+            readOnly={props.readOnly ?? false}
+          />
+          <dxmui.AppointmentForm.Label
+            text="-"
+            type='ordinaryLabel'
+            style={{width: '10%'}}
+          />
+          <muidp.DatePicker
+            renderInput={props => <mui.TextField {...props}/>}
+            value={data.endDate?.toUTCString()}
+            onChange={onEndDateChange}
+            inputFormat={'MM/dd/yyyy HH:mm'}
+            readOnly={props.readOnly ?? false}
+          />
+        </LocalizationProvider>
       </div>
 
       <dxmui.AppointmentForm.Label
