@@ -1,8 +1,8 @@
-# Callendar App
+# Doctor Callendar App
 
 A small React + Firebase app for doctors to manage patient appointments. Currently only supports Polish language.
 
-This project has been created as a test assignment.
+:warning: This project has been created as a test assignment.
 
 
 ## How to run
