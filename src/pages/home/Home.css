@@ -1,0 +1,14 @@
+#home-not-logged-in {
+  position: relative;
+  min-height: 80vh;
+  animation: fade-from-bottom 1s ease-out;
+}
+
+#home-not-logged-in h2 {
+  margin: 10px 0;
+}
+
+@keyframes fade-from-bottom {
+  from { top: 100px; opacity: 0%; }
+  to { top: 0px; opacity: 100%; }
+}

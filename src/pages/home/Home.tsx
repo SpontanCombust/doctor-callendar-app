@@ -25,8 +25,8 @@ export function Home() {
           <DoctorScheduler userId={userId}/>
         </Paper>
         :
-        <div className='flexv center'>
-          <h3>Zaloguj się, by przejść do widoku kalendarza</h3>
+        <div id="home-not-logged-in" className='flexv center'>
+          <h2>Zaloguj się, by przejść do widoku kalendarza</h2>
           <div className='button' onClick={logIn}>
             <img src={googleIcon} alt='Google' width="20px"/>
             <span>Zaloguj się przez Google</span>
