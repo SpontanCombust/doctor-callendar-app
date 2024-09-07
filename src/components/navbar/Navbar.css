@@ -9,16 +9,25 @@
 
 
 
+.logo {
+  width: 5%;
+  margin-left: 2%;
+}
+
+.logo img {
+  max-height: 50px;
+}
+
 .navbar ul {
-  width: 80%;
+  width: 75%;
   text-align: left;
-  padding-left: 4%;
+  padding: 0 1%;
 }
 
 .navbar li {
   display: inline-block;
   text-align: center;
-  padding: 10px 30px; 
+  padding: 10px 2%; 
   font-size: 1.7rem;
   font-weight: bolder;
   letter-spacing: 2px;

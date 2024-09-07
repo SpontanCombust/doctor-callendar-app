@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Link } from "react-router-dom"
+import { Person } from "@mui/icons-material";
 
-import "./Navbar.css"
 import { auth } from "../../firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { logIn, logOut } from "../../auth";
-import { Person } from "@mui/icons-material";
+
+import "./Navbar.css"
+import stethoscopeLogo from "./stethoscope.svg"
 
 
 export function Navbar() {
@@ -17,6 +19,11 @@ export function Navbar() {
 
   return (
     <nav className="navbar flexh">
+      <div className="logo">
+        <Link to="/">
+          <img src={stethoscopeLogo} alt="Logo"/>
+        </Link>
+      </div>
       <ul>
         <li><Link to="/" className="Link">Harmonogram</Link></li>
         <li><Link to="/about" className="Link">O nas</Link></li>
