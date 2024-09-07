@@ -116,15 +116,18 @@ export function DoctorScheduler(props: {
       <dxmui.DayView
         startDayHour={7.5}
         endDayHour={17}
+        displayName='Dzień'
       />
       <dxmui.WeekView
         startDayHour={7.5}
         endDayHour={17}
+        displayName='Tydzień'
       />
-      <dxmui.MonthView/>
+      <dxmui.MonthView
+        displayName='Miesiąc'
+      />
       
       <dxmui.Toolbar />
-      {/* //FIXME missing localization in the switcher */}
       <dxmui.ViewSwitcher />
       <dxmui.DateNavigator/>
       
@@ -140,6 +143,9 @@ export function DoctorScheduler(props: {
       />
       <dxmui.AppointmentForm
         basicLayoutComponent={AppointmentFormBasicLayout}
+        messages={{
+          commitCommand: 'Zapisz'
+        }}
       />
 
       <dxmui.DragDropProvider/>
