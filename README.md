@@ -45,7 +45,7 @@ Content of the `master` branch in the GitHub repository is automatically deploye
 - [x] usuwanie wizyt
 - [x] strona "o nas"
 - [x] podłączenie z db
-- [ ] zmienić favicon
+- [x] zmienić favicon
 - [x] dopicować widoki
 - [x] opublikowanie na github pages
 - [ ] spreparować dane
