@@ -191,7 +191,7 @@ function appointmentModelToProxy(model: DoctorAppointment): DoctorAppointmentPro
 }
 
 
-// FIXME time not visible
+// FIXME time not always visible
 function AppointmentContentComponent(props: dxmui.Appointments.AppointmentContentProps) {
   const data = props.data as DoctorAppointmentProxy;
   return (
@@ -323,16 +323,25 @@ function shouldFetchAppointments(previousDate: Date, currentDate: Date) : boolea
 }
 
 async function fetchAppointments(userId: string, currentDate: Date, dispatcher: (proxies: DoctorAppointmentProxy[]) => void) {
-  const firstDayOfThisMonth = new Date(currentDate);
-  firstDayOfThisMonth.setDate(1);
-  firstDayOfThisMonth.setHours(0, 0, 0);
+  // the most broad scheduler view we use is the month view
+  // this view can display days before and after this month to cover the entire 7 x 6 matrix
+  // to cover the entirety of it we need to fetch some appointments outside of this month
+  // about 2 weeks before and after this month's bounds are enough for displaying only the data that can be currently seen by the user 
 
-  const lastDayOfThisMonth = new Date(firstDayOfThisMonth);
-  lastDayOfThisMonth.setMonth(firstDayOfThisMonth.getMonth() + 1);
-  lastDayOfThisMonth.setDate(0); // sets the date to the last day of the previous month
-  lastDayOfThisMonth.setHours(23, 59, 59);
+  const lowBound = new Date(currentDate);
+  // 2 weeks before the first day of this month
+  lowBound.setDate(-14); 
+  lowBound.setHours(0, 0, 0);
 
-  const models = await AppointmentsService.getAppointmentsForUser(userId, firstDayOfThisMonth, lastDayOfThisMonth);
+  const highBound = new Date(currentDate);
+  // 2 weeks after the last possible day of this month
+  // using 31 days as a base for simplicity
+  highBound.setDate(31 + 14); 
+  highBound.setHours(23, 59, 59);
+
+  // console.log(lowBound + ' - ' + highBound);
+
+  const models = await AppointmentsService.getAppointmentsForUser(userId, lowBound, highBound);
   const proxies = models.map(m => appointmentModelToProxy(m));
 
   dispatcher(proxies);
