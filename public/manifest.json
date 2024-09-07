@@ -1,6 +1,6 @@
 {
   "short_name": "Doctor Callendar App",
-  "name": "App for managing doctor appointments using a callendar",
+  "name": "Small app for managing doctor appointments using a scheduler",
   "icons": [
     {
       "src": "favicon.ico",
