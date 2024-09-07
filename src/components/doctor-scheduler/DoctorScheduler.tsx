@@ -197,13 +197,16 @@ function appointmentModelToProxy(model: DoctorAppointment): DoctorAppointmentPro
 }
 
 
-// FIXME time not always visible
+
 function AppointmentContentComponent(props: dxmui.Appointments.AppointmentContentProps) {
   const data = props.data as DoctorAppointmentProxy;
   return (
   <div className='flexv align-center'>
-    <p className='fg-secondary'>{data.patientName} {data.patientSurname}</p>
-    <p className='fg-secondary'>{data.title}</p>
+    <p className='fg-secondary'>
+      <span>
+        <strong>{data.patientName} {data.patientSurname}</strong> - {data.title}
+      </span>
+    </p>
     <div className='flexh fg-secondary'>
       {props.formatDate(data.startDate, { hour: 'numeric', minute: 'numeric' })}
       -
