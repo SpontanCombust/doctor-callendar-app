@@ -295,7 +295,7 @@ function AppointmentFormBasicLayout(props: dxmui.AppointmentForm.BasicLayoutProp
           <dxmui.AppointmentForm.Label
             text="-"
             type='ordinaryLabel'
-            style={{width: '10%'}}
+            style={{width: '5%'}}
           />
           <muidp.DatePicker
             renderInput={props => <mui.TextField {...props}/>}

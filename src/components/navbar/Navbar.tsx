@@ -18,7 +18,7 @@ export function Navbar() {
   });
 
   return (
-    <nav className="navbar flexh">
+    <nav className="navbar">
       <div className="logo">
         <Link to="/">
           <img src={stethoscopeLogo} alt="Logo"/>
@@ -28,7 +28,7 @@ export function Navbar() {
         <li><Link to="/" className="Link">Harmonogram</Link></li>
         <li><Link to="/about" className="Link">O nas</Link></li>
       </ul>
-      <div className="user-info flexh">
+      <div className="user-info">
         {userName != null ?
           <>
             <div className="flexv">
