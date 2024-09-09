@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/doctor-callendar-app/static/css/main.e687ab48.css",
-    "main.js": "/doctor-callendar-app/static/js/main.802e2f1b.js",
+    "main.css": "/doctor-callendar-app/static/css/main.1d41549e.css",
+    "main.js": "/doctor-callendar-app/static/js/main.b0b57c8a.js",
     "static/media/firebase-logo.svg": "/doctor-callendar-app/static/media/firebase-logo.334c7505aa7b42a0a64028cae63fecfb.svg",
     "static/media/react-logo.svg": "/doctor-callendar-app/static/media/react-logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
     "static/media/stethoscope.svg": "/doctor-callendar-app/static/media/stethoscope.1217d1c1f6150b2e619f1a842ac92f2b.svg",
     "index.html": "/doctor-callendar-app/index.html",
     "static/media/google-logo.svg": "/doctor-callendar-app/static/media/google-logo.d7f092af888a54de79ed9c9303d689d7.svg",
-    "main.e687ab48.css.map": "/doctor-callendar-app/static/css/main.e687ab48.css.map",
-    "main.802e2f1b.js.map": "/doctor-callendar-app/static/js/main.802e2f1b.js.map"
+    "main.1d41549e.css.map": "/doctor-callendar-app/static/css/main.1d41549e.css.map",
+    "main.b0b57c8a.js.map": "/doctor-callendar-app/static/js/main.b0b57c8a.js.map"
   },
   "entrypoints": [
-    "static/css/main.e687ab48.css",
-    "static/js/main.802e2f1b.js"
+    "static/css/main.1d41549e.css",
+    "static/js/main.b0b57c8a.js"
   ]
 }
