@@ -31,22 +31,3 @@ npm run build
 Builds the app for production to the `build` folder.
 
 Content of the `master` branch in the GitHub repository is automatically deployed to GitHub Pages.
-
-
-
-<!-- 
-## TODO
-- [x] logowanie się
-- [x] wylogowywanie się
-- [x] widok na głównej o niezalogowaniu
-- [x] formatka wizyty
-- [x] dodawanie nowych wizyt
-- [x] edytowanie wizyt
-- [x] usuwanie wizyt
-- [x] strona "o nas"
-- [x] podłączenie z db
-- [x] zmienić favicon
-- [x] dopicować widoki
-- [x] opublikowanie na github pages
-- [ ] spreparować dane
--->
